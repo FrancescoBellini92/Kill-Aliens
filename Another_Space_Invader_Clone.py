@@ -10,6 +10,7 @@
 """ ############### IMPORT MODULES ############# """
 
 import pygame,os,sys,random
+pygame.font.init()
 
 
 """ ############### CLASS DEFINITIONS ############## """
@@ -107,6 +108,7 @@ class player_shot(pygame.sprite.Sprite):
             self.kill
         return
 
+
 """ ############### FUNCTION DEFINITIONS ############## """
 
 
@@ -132,6 +134,7 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
     hits=0 # hit counter
     dead_counter=0 # frames after death
     dead=None
+    scores=0
     player_mov=[0,0] # dummy for moving the player
 
     """ DISPLAY """
@@ -213,7 +216,8 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
             hits=lifepoints
         for shot in collision_shot_enemy.keys():
             expl=explosion_enemy(collision_shot_enemy[shot][0])
-            explosion_enemy_group.add(expl) 
+            explosion_enemy_group.add(expl)
+            scores+=1
 
         """ MOVE SECTION """
         if player.rect.right==screen_rect.right:
@@ -237,11 +241,17 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         shot_group.draw(screen)
         explosion_group.draw(screen)
         explosion_enemy_group.draw(screen)
+
+        scores_string=str(scores)
+        sentence="Enemies destroyed:" + scores_string
+        score_font=pygame.font.Font(None,30)
+        score_display=score_font.render(sentence,True,(255,0,0))
+        screen.blit(score_display,[width-215,height-25])
         pygame.display.flip()
 
         """ DEATH SECTION """
         if dead and dead_counter>15:
-            return death()
+            return death(scores)
         if hits > lifepoints:
             player.image=pygame.image.load("explosion_big.png")
             dead_counter+=1
@@ -249,7 +259,7 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         
     return
 
-def death():
+def death(scores):
     background_im="death_screen.jpg"
     background=pygame.image.load(background_im)
     screen_dimension=background.get_rect()
@@ -257,9 +267,14 @@ def death():
     height=screen_dimension[3]
     screen=pygame.display.set_mode([width,height])
     response=None
+    scores=str(scores)
+    sentence="You destroyed " + scores + " enemy ships!"
+    score_font=pygame.font.Font(None,40)
+    score_display=score_font.render(sentence,True,(255,0,0))
     while response==None:
         pygame.display.flip()
         screen.blit(background,screen_dimension)
+        screen.blit(score_display,[width/2-175,height/2 + 50])
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type==pygame.KEYDOWN:
