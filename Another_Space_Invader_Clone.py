@@ -1,4 +1,4 @@
-""" ############### KILL ALIENS!############# """
+""" ############### Anoter SPace Invader Clone ############# """
 
 # TODO:
 # 1) SCORES
