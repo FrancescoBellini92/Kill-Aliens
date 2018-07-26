@@ -246,7 +246,7 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         sentence="Enemies destroyed:" + scores_string
         score_font=pygame.font.Font(None,30)
         score_display=score_font.render(sentence,True,(255,0,0))
-        screen.blit(score_display,[width-215,height-25])
+        screen.blit(score_display,[width-218,height-25])
         pygame.display.flip()
 
         """ DEATH SECTION """
