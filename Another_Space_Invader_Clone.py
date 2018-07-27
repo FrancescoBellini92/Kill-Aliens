@@ -17,7 +17,7 @@ class explosion(pygame.sprite.Sprite):
         a bomb or an enemy ship """
     def __init__(self,obj):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("explosion.gif")
+        self.image=pygame.image.load("explosion.png")
         self.rect=self.image.get_rect(center=obj.rect.center)
         self.life=3
     def update(self): 
@@ -51,10 +51,10 @@ class player_obj(pygame.sprite.Sprite):
     def __init__(self,starting_pos):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("player.png")
-        self.explosions=["expl1.jpg",
-                           "expl2.jpg",
-                           "expl3.jpg",
-                           "expl4.jpg"]
+        self.explosions=["expl1.png",
+                           "expl2.png",
+                           "expl3.png",
+                           "expl4.png"]
         self.rect=self.image.get_rect(midbottom=starting_pos.midbottom)
         self.speed=[6,0]
         self.reverse_speed=[-6,0]
