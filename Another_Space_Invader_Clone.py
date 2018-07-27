@@ -141,10 +141,7 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
     clock=pygame.time.Clock()
     framerate=30
     counter1=0 # for respawning enemies
-    counter2=0 # for enemy bombs
-    hits=0 # hit counter
-    dead_counter=0 # frames after death
-    dead=None
+    counter2=0 # for respawning enemy bombs
     scores=0
     player_mov=[0,0] # dummy for moving the player
 
@@ -220,11 +217,11 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         for bomb in collision_player_bomb:
             expl=explosion(bomb)
             explosion_group.add(expl)
-            hits+=1
+            lifepoints-=1
         for crash in collision_player_enemy:
             expl=explosion(crash)
             explosion_group.add(expl)
-            hits=lifepoints
+            lifepoints=0
         for shot in collision_shot_enemy.keys():
             expl=explosion_enemy(collision_shot_enemy[shot][0])
             explosion_enemy_group.add(expl)
@@ -254,14 +251,21 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         explosion_enemy_group.draw(screen)
 
         scores_string=str(scores)
-        sentence="Enemies destroyed:" + scores_string
+        score_text="Enemies destroyed:" + scores_string
         score_font=pygame.font.Font(None,30)
-        score_display=score_font.render(sentence,True,(255,0,0))
+        score_display=score_font.render(score_text,True,(255,0,0))
         screen.blit(score_display,[width-218,height-25])
+
+        life_string=str(lifepoints)
+        life_text="Lifepoints: " +life_string
+        life_font=pygame.font.Font(None,30)
+        life_display=life_font.render(life_text,True,(255,0,0))
+        screen.blit(life_display,[width-139,height-75])
+        
         pygame.display.flip()
 
         """ DEATH SECTION """
-        if hits > lifepoints:
+        if lifepoints<1:
             player.death_sequence(scores)
             
         
