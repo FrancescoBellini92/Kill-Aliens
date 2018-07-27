@@ -1,7 +1,7 @@
 """ ############### Anoter SPace Invader Clone ############# """
 
 # TODO:
-# 1) DEATH AND HEALTH
+# 1) HEALTH
 # 2) TRANSPARENCIES
 # 3) edges bumping
 
@@ -128,10 +128,8 @@ class player_shot(pygame.sprite.Sprite):
 def main_function():
 
     """ DEFINE PATH  """
-    path_E200HA="C:\\Users\\Franc\\Documents\\GitHub\\Another-Space-Invader-Clone"
-    path_X555LJ="C:\\Users\\Francesco Bellini\\Google Drive\\2) Programming\\Python\\Games\\Kill Aliens!"
-    if os.path.exists(path_E200HA): os.chdir(path_E200HA)
-    else: os.chdir(path_X555LJ)
+    path=sys.path[0]
+    os.chdir(path)
        
     """ CALL GAME """
     return game_function(6,30,30,3,"space_background.jpg") 
