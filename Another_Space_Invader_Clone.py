@@ -1,9 +1,7 @@
 """ ############### Anoter SPace Invader Clone ############# """
 
 # TODO:
-# 1) HEALTH
-# 2) TRANSPARENCIES
-# 3) edges bumping
+# 1) TRANSPARENCIES
 
 
 """ ############### IMPORT MODULES ############# """
@@ -34,13 +32,10 @@ class explosion_enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.images=["alien1_explod1.png",
                      "alien1_explod1.png",
-                     "alien1_explod1.png",
                      "alien1_explod2.png",
                      "alien1_explod2.png",
-                     "alien1_explod2.png",
-                     "alien1_gone.png",
                      "alien1_gone.png"]
-        self.frame_duration=len(self.images)-1 # 8 frames
+        self.frame_duration=len(self.images)-1 # 5 frames
         self.image=pygame.image.load(self.images[0])
         self.rect=self.image.get_rect(center=obj.rect.center)
         self.life=0
@@ -57,21 +52,20 @@ class player_obj(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("player.png")
         self.explosions=["expl1.jpg",
-                           "expl1.jpg",
-                           "expl2.jpg",
                            "expl2.jpg",
                            "expl3.jpg",
-                           "expl3.jpg",
-                           "expl4.jpg",
                            "expl4.jpg"]
         self.rect=self.image.get_rect(midbottom=starting_pos.midbottom)
         self.speed=[6,0]
         self.reverse_speed=[-6,0]
         self.stop=[0,0]
         self.life=0
-        self.frame_duration=len(self.explosions)-1 # 8 frames
+        self.frame_duration=len(self.explosions)-1 # 4 frames
     def update(self,speed,screen_rect):
         self.rect.x+=speed[0]
+        if self.rect.right>screen_rect.right or self.rect.left<screen_rect.left:
+            self.rect.x-=speed[0]
+            
 
     def death_sequence(self,scores):
         self.image=pygame.image.load(self.explosions[self.life])
@@ -139,7 +133,7 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
 
     """ INIT """
     clock=pygame.time.Clock()
-    framerate=30
+    framerate=40
     counter1=0 # for respawning enemies
     counter2=0 # for respawning enemy bombs
     scores=0
@@ -228,10 +222,6 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
             scores+=1
 
         """ MOVE SECTION """
-        if player.rect.right==screen_rect.right:
-            player_mov=player.stop
-        elif player.rect.left==screen_rect.left:
-            player_mov=player.stop
         enemy_group.update(screen_rect)
         bomb_group.update(screen_rect)
         player_group.update(player_mov,screen_rect)
