@@ -1,10 +1,9 @@
 """ ############### Anoter SPace Invader Clone ############# """
 
 # TODO:
-# 1) SCORES
-# 2) DEATH AND HEALTH
-# 3) TRANSPARENCIES
-# 4) edges bumping
+# 1) DEATH AND HEALTH
+# 2) TRANSPARENCIES
+# 3) edges bumping
 
 
 """ ############### IMPORT MODULES ############# """
@@ -35,21 +34,20 @@ class explosion_enemy(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.images=["alien1_explod1.png",
                      "alien1_explod1.png",
+                     "alien1_explod1.png",
                      "alien1_explod2.png",
                      "alien1_explod2.png",
-                     "alien1_explod3.png",
-                     "alien1_explod3.png",
+                     "alien1_explod2.png",
                      "alien1_gone.png",
                      "alien1_gone.png"]
+        self.frame_duration=len(self.images)-1 # 8 frames
         self.image=pygame.image.load(self.images[0])
         self.rect=self.image.get_rect(center=obj.rect.center)
-        self.life=7
-        self.i=0
+        self.life=0
     def update(self):
-        self.i+=1
-        self.image=pygame.image.load(self.images[self.i])
-        self.life-=1
-        if self.life<1:
+        self.image=pygame.image.load(self.images[self.life])
+        self.life+=1
+        if self.life==self.frame_duration:
             self.kill()
         return
 
@@ -58,14 +56,29 @@ class player_obj(pygame.sprite.Sprite):
     def __init__(self,starting_pos):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("player.png")
+        self.explosions=["expl1.jpg",
+                           "expl1.jpg",
+                           "expl2.jpg",
+                           "expl2.jpg",
+                           "expl3.jpg",
+                           "expl3.jpg",
+                           "expl4.jpg",
+                           "expl4.jpg"]
         self.rect=self.image.get_rect(midbottom=starting_pos.midbottom)
         self.speed=[6,0]
         self.reverse_speed=[-6,0]
         self.stop=[0,0]
+        self.life=0
+        self.frame_duration=len(self.explosions)-1 # 8 frames
     def update(self,speed,screen_rect):
         self.rect.x+=speed[0]
-    
 
+    def death_sequence(self,scores):
+        self.image=pygame.image.load(self.explosions[self.life])
+        self.life+=1
+        if self.life==self.frame_duration: return death(scores)
+            
+        
 class aliens(pygame.sprite.Sprite):
     """ this class defines the enemy ship sprites """
     def __init__(self):
@@ -115,7 +128,7 @@ class player_shot(pygame.sprite.Sprite):
 def main_function():
 
     """ DEFINE PATH  """
-    path_E200HA="D:\\Google Drive\\2) Programming\\Python\\Games\\Kill Aliens!"
+    path_E200HA="C:\\Users\\Franc\\Documents\\GitHub\\Another-Space-Invader-Clone"
     path_X555LJ="C:\\Users\\Francesco Bellini\\Google Drive\\2) Programming\\Python\\Games\\Kill Aliens!"
     if os.path.exists(path_E200HA): os.chdir(path_E200HA)
     else: os.chdir(path_X555LJ)
@@ -250,14 +263,11 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         pygame.display.flip()
 
         """ DEATH SECTION """
-        if dead and dead_counter>15:
-            return death(scores)
         if hits > lifepoints:
-            player.image=pygame.image.load("explosion_big.png")
-            dead_counter+=1
-            dead=True
+            player.death_sequence(scores)
+            
         
-    return
+    return 
 
 def death(scores):
     background_im="death_screen.jpg"
@@ -277,6 +287,9 @@ def death(scores):
         screen.blit(score_display,[width/2-175,height/2 + 50])
         pygame.display.flip()
         for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.display.quit()
+                sys.exit()
             if event.type==pygame.KEYDOWN:
                 if event.key in [82,114]:
                     response=1
