@@ -24,7 +24,7 @@ class explosion(pygame.sprite.Sprite):
         self.life-=1
         if self.life<1:
             self.kill()
-        return
+        
 
 class explosion_enemy(pygame.sprite.Sprite):
     """ this class defines the explosion sprites for enemies """
@@ -44,7 +44,7 @@ class explosion_enemy(pygame.sprite.Sprite):
         self.life+=1
         if self.life==self.frame_duration:
             self.kill()
-        return
+        
 
 class player_obj(pygame.sprite.Sprite):
     """ this class defines the player controlled sprite """
@@ -56,8 +56,8 @@ class player_obj(pygame.sprite.Sprite):
                            "expl3.png",
                            "expl4.png"]
         self.rect=self.image.get_rect(midbottom=starting_pos.midbottom)
-        self.speed=[6,0]
-        self.reverse_speed=[-6,0]
+        self.speed=[8,0]
+        self.reverse_speed=[-8,0]
         self.stop=[0,0]
         self.life=0
         self.frame_duration=len(self.explosions)-1 # 4 frames
@@ -79,7 +79,7 @@ class aliens(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("alien1.png")
         self.rect=self.image.get_rect()
-        self.speed=[6,30]
+        self.speed=[8,30]
         
     def update(self,screen_rect):
         self.rect.x+=self.speed[0]
@@ -87,7 +87,7 @@ class aliens(pygame.sprite.Sprite):
         if not screen_rect.contains(self.rect):
             self.speed[0]=-self.speed[0]
             self.rect.y+=self.speed[1]
-        return
+        
 
 class alien_bomb(pygame.sprite.Sprite):
     """ this class defines the enemy bomb sprites """
@@ -95,12 +95,12 @@ class alien_bomb(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("alien_bomb.png")
         self.rect=self.image.get_rect(center=ship.rect.midbottom)
-        self.speed=[0,4] 
+        self.speed=[0,6] 
     def update(self,screen_rect):
         self.rect.y+=self.speed[1]
         if not screen_rect.contains(self.rect):
             self.kill()
-        return
+        
 
 class player_shot(pygame.sprite.Sprite):
     """ this class defines the player shot sprites """
@@ -113,7 +113,7 @@ class player_shot(pygame.sprite.Sprite):
         self.rect.y+=self.speed[1]
         if not screen_rect.contains(self.rect):
             self.kill
-        return
+        
 
 
 """ ############### FUNCTION DEFINITIONS ############## """
@@ -126,14 +126,14 @@ def main_function():
     os.chdir(path)
        
     """ CALL GAME """
-    return game_function(6,30,30,3,"space_background.jpg") 
+    return game_function(12,15,23,10,"space_background.jpg") 
     
         
 def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,background_im): 
 
     """ INIT """
     clock=pygame.time.Clock()
-    framerate=40
+    framerate=30
     counter1=0 # for respawning enemies
     counter2=0 # for respawning enemy bombs
     scores=0
@@ -257,9 +257,9 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         """ DEATH SECTION """
         if lifepoints<1:
             player.death_sequence(scores)
+
             
-        
-    return 
+
 
 def death(scores):
     background_im="death_screen.jpg"
@@ -292,6 +292,7 @@ def death(scores):
     if response==2:
         pygame.display.quit()
         sys.exit()
+    
 
 """ ############### EXECUTION ############## """
 
