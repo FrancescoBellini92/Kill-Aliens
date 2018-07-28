@@ -1,8 +1,5 @@
 """ ############### Anoter SPace Invader Clone ############# """
 
-# TODO:
-# 1) TRANSPARENCIES
-
 
 """ ############### IMPORT MODULES ############# """
 
@@ -27,7 +24,7 @@ class explosion(pygame.sprite.Sprite):
         
 
 class explosion_enemy(pygame.sprite.Sprite):
-    """ this class defines the explosion sprites for enemies """
+    
     def __init__(self,obj):
         pygame.sprite.Sprite.__init__(self)
         self.images=["alien1_explod1.png",
@@ -47,17 +44,17 @@ class explosion_enemy(pygame.sprite.Sprite):
         
 
 class player_obj(pygame.sprite.Sprite):
-    """ this class defines the player controlled sprite """
+    
     def __init__(self,starting_pos):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("player.png")
         self.explosions=["expl1.png",
-                           "expl2.png",
-                           "expl3.png",
-                           "expl4.png"]
+                         "expl2.png",
+                         "expl3.png",
+                         "expl4.png"]
         self.rect=self.image.get_rect(midbottom=starting_pos.midbottom)
-        self.speed=[8,0]
-        self.reverse_speed=[-8,0]
+        self.speed=[10,0]
+        self.reverse_speed=[-10,0]
         self.stop=[0,0]
         self.life=0
         self.frame_duration=len(self.explosions)-1 # 4 frames
@@ -74,12 +71,18 @@ class player_obj(pygame.sprite.Sprite):
             
         
 class aliens(pygame.sprite.Sprite):
-    """ this class defines the enemy ship sprites """
+   
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("alien1.png")
         self.rect=self.image.get_rect()
-        self.speed=[8,30]
+        self.pos=random.choice([[0,0],[800,0]])
+        if self.pos==[0,0]:
+            self.speed=[10,30]
+        else:
+            self.speed=[-10,30]
+            self.rect=self.image.get_rect(right=800)
+           
         
     def update(self,screen_rect):
         self.rect.x+=self.speed[0]
@@ -87,10 +90,12 @@ class aliens(pygame.sprite.Sprite):
         if not screen_rect.contains(self.rect):
             self.speed[0]=-self.speed[0]
             self.rect.y+=self.speed[1]
+
+            
         
 
 class alien_bomb(pygame.sprite.Sprite):
-    """ this class defines the enemy bomb sprites """
+    
     def __init__(self,ship):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("alien_bomb.png")
@@ -103,7 +108,7 @@ class alien_bomb(pygame.sprite.Sprite):
         
 
 class player_shot(pygame.sprite.Sprite):
-    """ this class defines the player shot sprites """
+    
     def __init__(self,pos):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("shot.png")
@@ -126,10 +131,16 @@ def main_function():
     os.chdir(path)
        
     """ CALL GAME """
-    return game_function(12,15,23,10,"space_background.jpg") 
+    return game_function(n_enemies=12,
+                         respawn_frequency=10,
+                         respawn_prob=7, # 60%
+                         bomb_firing_rate=15,
+                         bomb_prob=7, #60%
+                         lifepoints=10,
+                         background_im="space_background.jpg") 
     
         
-def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,background_im): 
+def game_function(n_enemies,respawn_frequency,respawn_prob,bomb_firing_rate,bomb_prob,lifepoints,background_im): 
 
     """ INIT """
     clock=pygame.time.Clock()
@@ -193,13 +204,13 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         if len(enemy_group)>n_enemies:
             counter1=0
         elif counter1==respawn_frequency:
-            if random.randint(0,10) in range(6): #probability of respawning = 50% 
+            if random.randint(0,10) in range(respawn_prob): #probability of respawning 
                 new_enemy=aliens()
                 enemy_group.add(new_enemy)
             counter1=0
         if counter2==bomb_firing_rate:
             for n in enemy_group:
-                if random.randint(0,10) in range(6): #probability of shooting = 50% 
+                if random.randint(0,10) in range(bomb_prob): #probability of shooting
                     new_bomb=alien_bomb(n)
                     bomb_group.add(new_bomb)
             counter2=0
@@ -247,12 +258,13 @@ def game_function(n_enemies,respawn_frequency,bomb_firing_rate,lifepoints,backgr
         screen.blit(score_display,[width-218,height-25])
 
         life_string=str(lifepoints)
-        life_text="Lifepoints: " +life_string
+        life_text="Lifepoints: "+life_string
         life_font=pygame.font.Font(None,30)
         life_display=life_font.render(life_text,True,(255,0,0))
         screen.blit(life_display,[width-139,height-75])
         
-        pygame.display.flip()
+        pygame.display.flip()             
+            
 
         """ DEATH SECTION """
         if lifepoints<1:
