@@ -17,10 +17,12 @@ class explosion(pygame.sprite.Sprite):
         self.image=pygame.image.load("explosion.png")
         self.rect=self.image.get_rect(center=obj.rect.center)
         self.life=3
+        return
     def update(self): 
         self.life-=1
         if self.life<1:
             self.kill()
+        return
         
 
 class explosion_enemy(pygame.sprite.Sprite):
@@ -36,11 +38,13 @@ class explosion_enemy(pygame.sprite.Sprite):
         self.image=pygame.image.load(self.images[0])
         self.rect=self.image.get_rect(center=obj.rect.center)
         self.life=0
+        return
     def update(self):
         self.image=pygame.image.load(self.images[self.life])
         self.life+=1
         if self.life==self.frame_duration:
             self.kill()
+        return
         
 
 class player_obj(pygame.sprite.Sprite):
@@ -58,17 +62,18 @@ class player_obj(pygame.sprite.Sprite):
         self.stop=[0,0]
         self.life=0
         self.frame_duration=len(self.explosions)-1 # 4 frames
+        return
     def update(self,speed,screen_rect):
         self.rect.x+=speed[0]
         if self.rect.right>screen_rect.right or self.rect.left<screen_rect.left:
             self.rect.x-=speed[0]
-            
+        return            
 
     def death_sequence(self,scores):
         self.image=pygame.image.load(self.explosions[self.life])
         self.life+=1
         if self.life==self.frame_duration: return death(scores)
-            
+        return            
         
 class aliens(pygame.sprite.Sprite):
    
@@ -82,7 +87,7 @@ class aliens(pygame.sprite.Sprite):
         else:
             self.speed=[-10,30]
             self.rect=self.image.get_rect(right=800)
-           
+        return           
         
     def update(self,screen_rect):
         self.rect.x+=self.speed[0]
@@ -90,7 +95,7 @@ class aliens(pygame.sprite.Sprite):
         if not screen_rect.contains(self.rect):
             self.speed[0]=-self.speed[0]
             self.rect.y+=self.speed[1]
-
+        return
             
         
 
@@ -100,12 +105,13 @@ class alien_bomb(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("alien_bomb.png")
         self.rect=self.image.get_rect(center=ship.rect.midbottom)
-        self.speed=[0,6] 
+        self.speed=[0,6]
+        return
     def update(self,screen_rect):
         self.rect.y+=self.speed[1]
         if not screen_rect.contains(self.rect):
             self.kill()
-        
+        return        
 
 class player_shot(pygame.sprite.Sprite):
     
@@ -118,7 +124,7 @@ class player_shot(pygame.sprite.Sprite):
         self.rect.y+=self.speed[1]
         if not screen_rect.contains(self.rect):
             self.kill
-        
+        return   
 
 
 """ ############### FUNCTION DEFINITIONS ############## """
@@ -131,16 +137,10 @@ def main_function():
     os.chdir(path)
        
     """ CALL GAME """
-    return game_function(n_enemies=12,
-                         respawn_frequency=10,
-                         respawn_prob=7, # 60%
-                         bomb_firing_rate=15,
-                         bomb_prob=7, #60%
-                         lifepoints=10,
-                         background_im="space_background.jpg") 
+    return game_function() 
     
         
-def game_function(n_enemies,respawn_frequency,respawn_prob,bomb_firing_rate,bomb_prob,lifepoints,background_im): 
+def game_function(): 
 
     """ INIT """
     clock=pygame.time.Clock()
@@ -149,6 +149,15 @@ def game_function(n_enemies,respawn_frequency,respawn_prob,bomb_firing_rate,bomb
     counter2=0 # for respawning enemy bombs
     scores=0
     player_mov=[0,0] # dummy for moving the player
+
+    """ PARAMETERS """
+    n_enemies=12
+    respawn_frequency=15
+    respawn_prob=7 # 60%
+    bomb_firing_rate=23
+    bomb_prob=7 #60%
+    lifepoints=7
+    background_im="space_background.jpg"
 
     """ DISPLAY """
     background=pygame.image.load(background_im)
@@ -264,13 +273,26 @@ def game_function(n_enemies,respawn_frequency,respawn_prob,bomb_firing_rate,bomb
         screen.blit(life_display,[width-139,height-75])
         
         pygame.display.flip()             
-            
+
+        """ DIFFICULTY  SECTION """
+        if scores>10:
+            n_enemies=18
+            respawn_frequency=12
+            bomb_firing_rate=16
+        elif scores>20:
+            n_enemies=24
+            respawn_frequency=10
+            bomb_firing_rate=10
+        elif scores>30:
+            n_enemies=36
+            respawn_frequency=8
+            bomb_firing_rate=8
 
         """ DEATH SECTION """
         if lifepoints<1:
             player.death_sequence(scores)
 
-            
+    return            
 
 
 def death(scores):
@@ -304,7 +326,7 @@ def death(scores):
     if response==2:
         pygame.display.quit()
         sys.exit()
-    
+    return    
 
 """ ############### EXECUTION ############## """
 
