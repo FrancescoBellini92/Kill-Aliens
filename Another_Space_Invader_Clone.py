@@ -210,9 +210,10 @@ def game_function():
                 player_mov=player.stop
 
         """ RESPAWN SECTION """
+        
         if len(enemy_group)>n_enemies:
             counter1=0
-        elif counter1==respawn_frequency:
+        elif counter1>=respawn_frequency:
             if random.randint(0,10) in range(respawn_prob): #probability of respawning 
                 new_enemy=aliens()
                 enemy_group.add(new_enemy)
@@ -272,8 +273,8 @@ def game_function():
         life_display=life_font.render(life_text,True,(255,0,0))
         screen.blit(life_display,[width-139,height-75])
         
-        pygame.display.flip()             
-
+        pygame.display.flip()
+    
         """ DIFFICULTY  SECTION """
         if scores>10:
             n_enemies=18
@@ -322,7 +323,7 @@ def death(scores):
                 elif event.key in [81,113]:
                     response=2
     if response==1:
-        return game_function(6,30,30,3,"space_background.jpg")
+        return game_function()
     if response==2:
         pygame.display.quit()
         sys.exit()
