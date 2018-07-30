@@ -1,4 +1,4 @@
-""" ############### Anoter SPace Invader Clone ############# """
+""" ############### Another SPace Invader Clone ############# """
 
 
 """ ############### IMPORT MODULES ############# """
