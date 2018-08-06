@@ -218,7 +218,7 @@ def game_function():
                 new_enemy=aliens()
                 enemy_group.add(new_enemy)
             counter1=0
-        if counter2==bomb_firing_rate:
+        if counter2>=bomb_firing_rate:
             for n in enemy_group:
                 if random.randint(0,10) in range(bomb_prob): #probability of shooting
                     new_bomb=alien_bomb(n)
