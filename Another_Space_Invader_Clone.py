@@ -154,7 +154,7 @@ def game_function():
     n_enemies=12
     respawn_frequency=15
     respawn_prob=7 # 60%
-    bomb_firing_rate=23
+    bomb_firing_rate=[18,21,24,27]
     bomb_prob=7 #60%
     lifepoints=7
     background_im="space_background.jpg"
@@ -218,7 +218,7 @@ def game_function():
                 new_enemy=aliens()
                 enemy_group.add(new_enemy)
             counter1=0
-        if counter2>=bomb_firing_rate:
+        if counter2>=random.choice(bomb_firing_rate):
             for n in enemy_group:
                 if random.randint(0,10) in range(bomb_prob): #probability of shooting
                     new_bomb=alien_bomb(n)
@@ -279,15 +279,17 @@ def game_function():
         if scores>10:
             n_enemies=18
             respawn_frequency=12
-            bomb_firing_rate=16
+            bomb_firing_rate=[15,18,21,24]
         elif scores>20:
             n_enemies=24
             respawn_frequency=10
             bomb_firing_rate=10
+            bomb_firing_rate=[12,15,18,24]
         elif scores>30:
             n_enemies=36
             respawn_frequency=8
             bomb_firing_rate=8
+            bomb_firing_rate=[9,12,15,18]
 
         """ DEATH SECTION """
         if lifepoints<1:
