@@ -37,12 +37,12 @@ class explosion_enemy(pygame.sprite.Sprite):
         self.frame_duration=len(self.images)-1 # 5 frames
         self.image=pygame.image.load(self.images[0])
         self.rect=self.image.get_rect(center=obj.rect.center)
-        self.life=0
+        self.life=0 # life attributes defines how many frames the object will be rendered
         return
     def update(self):
         self.image=pygame.image.load(self.images[self.life])
         self.life+=1
-        if self.life==self.frame_duration:
+        if self.life==self.frame_duration: #after the set amount of frames, the object is killed
             self.kill()
         return
         
@@ -60,8 +60,8 @@ class player_obj(pygame.sprite.Sprite):
         self.speed=[10,0]
         self.reverse_speed=[-10,0]
         self.stop=[0,0]
-        self.life=0
-        self.frame_duration=len(self.explosions)-1 # 4 frames
+        self.life=0 #life attribute here is only related to player death animation, as it does not expire as object before dying
+        self.frame_duration=len(self.explosions)-1 # 4 frames, 4 different pics for the explosion animation
         return
     def update(self,speed,screen_rect):
         self.rect.x+=speed[0]
@@ -70,9 +70,9 @@ class player_obj(pygame.sprite.Sprite):
         return            
 
     def death_sequence(self,scores):
-        self.image=pygame.image.load(self.explosions[self.life])
+        self.image=pygame.image.load(self.explosions[self.life]) # life acts as an index for the list of explosion pictures
         self.life+=1
-        if self.life==self.frame_duration: return death(scores)
+        if self.life==self.frame_duration: return death(scores) # calls function for game over
         return            
         
 class aliens(pygame.sprite.Sprite):
@@ -190,7 +190,7 @@ def game_function():
 
     """ MAIN LOOP """
     while True:
-        counter1+=1
+        counter1+=1 #for each frame, counters are increases. Useful for keeping track of time and timing events
         counter2+=1
 
         """ EVENT SECTION """
@@ -218,7 +218,7 @@ def game_function():
                 new_enemy=aliens()
                 enemy_group.add(new_enemy)
             counter1=0
-        if counter2>=random.choice(bomb_firing_rate):
+        if counter2>=random.choice(bomb_firing_rate): # by using a list of numbers, bomb firing rate is jittered
             for n in enemy_group:
                 if random.randint(0,10) in range(bomb_prob): #probability of shooting
                     new_bomb=alien_bomb(n)
@@ -252,7 +252,7 @@ def game_function():
         
 
         """ MAIN ANIMATION SECTION """
-        clock.tick(framerate)
+        clock.tick(framerate) # sets the framerate of the game
         screen.blit(background,screen_dimension)
         enemy_group.draw(screen)
         bomb_group.draw(screen)
