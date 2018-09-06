@@ -1,2 +1,3 @@
 # Another-Space-Invader-Clone
-This is my first attempt to write a simple 2D game with Python
+This game is a small project I carry out during free time. The next priority is including sound effects.
+More enemies and levels are planned to be added in the future.
