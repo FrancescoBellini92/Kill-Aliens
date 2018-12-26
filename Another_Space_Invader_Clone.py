@@ -119,7 +119,7 @@ class player_shot(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load("shot.png")
         self.rect=self.image.get_rect(midbottom=pos)
-        self.speed=[0,-8]
+        self.speed=[0,-16]
     def update(self,screen_rect):
         self.rect.y+=self.speed[1]
         if not screen_rect.contains(self.rect):
@@ -129,6 +129,8 @@ class player_shot(pygame.sprite.Sprite):
 
 """ ############### FUNCTION DEFINITIONS ############## """
 
+# MAIN->GAME->DEATH
+
 
 def main_function():
 
@@ -136,6 +138,11 @@ def main_function():
     path=sys.path[0]
     os.chdir(path)
        
+    """ MUSIC """
+    pygame.mixer.init()
+    soundtrack = "soundtrack_1.mp3"
+    pygame.mixer.music.load(soundtrack)
+    pygame.mixer.music.play(-1)
     """ CALL GAME """
     return game_function() 
     
@@ -159,6 +166,13 @@ def game_function():
     lifepoints=7
     background_im="space_background.jpg"
 
+    """ MUSIC """
+    pygame.mixer.init()
+    soundtrack = "soundtrack_1.mp3"
+    pygame.mixer.music.load(soundtrack)
+    pygame.mixer.music.play(-1)
+    """ CALL GAME """
+
     """ DISPLAY """
     background=pygame.image.load(background_im)
     screen_dimension=background.get_rect()
@@ -167,6 +181,7 @@ def game_function():
     screen=pygame.display.set_mode([width,height])
     screen_rect=screen.get_rect()
 
+    
     """ DECORATING DISPLAY BAR """
     icon=pygame.image.load("alien1.png")
     icon=pygame.transform.scale(icon,(32,32))
@@ -197,6 +212,7 @@ def game_function():
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 pygame.display.quit()
+                pygame.mixer.music.fadeout(2000)
                 sys.exit()
             if event.type==pygame.KEYDOWN: # up 273, down 274, right 275, left 276, spacebar 32
                 if event.key==275:
@@ -311,9 +327,10 @@ def death(scores):
     score_font=pygame.font.Font(None,40)
     score_display=score_font.render(sentence,True,(255,0,0))
     while response==None:
+        pygame.mixer.music.fadeout(2000)
         pygame.display.flip()
         screen.blit(background,screen_dimension)
-        screen.blit(score_display,[width/2-175,height/2 + 50])
+        screen.blit(score_display,[width/2-195,height/2 + 50])
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
