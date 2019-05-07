@@ -14,7 +14,7 @@ class explosion(pygame.sprite.Sprite):
         a bomb or an enemy ship """
     def __init__(self,obj):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("explosion.png")
+        self.image=pygame.image.load("data/explosion.png")
         self.rect=self.image.get_rect(center=obj.rect.center)
         self.life=3
         return
@@ -29,11 +29,11 @@ class explosion_enemy(pygame.sprite.Sprite):
     
     def __init__(self,obj):
         pygame.sprite.Sprite.__init__(self)
-        self.images=["alien1_explod1.png",
-                     "alien1_explod1.png",
-                     "alien1_explod2.png",
-                     "alien1_explod2.png",
-                     "alien1_gone.png"]
+        self.images=["data/alien1_explod1.png",
+                     "data/alien1_explod1.png",
+                     "data/alien1_explod2.png",
+                     "data/alien1_explod2.png",
+                     "data/alien1_gone.png"]
         self.frame_duration=len(self.images)-1 # 5 frames
         self.image=pygame.image.load(self.images[0])
         self.rect=self.image.get_rect(center=obj.rect.center)
@@ -51,11 +51,11 @@ class player_obj(pygame.sprite.Sprite):
     
     def __init__(self,starting_pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("player.png")
-        self.explosions=["expl1.png",
-                         "expl2.png",
-                         "expl3.png",
-                         "expl4.png"]
+        self.image=pygame.image.load("data/player.png")
+        self.explosions=["data/expl1.png",
+                         "data/expl2.png",
+                         "data/expl3.png",
+                         "data/expl4.png"]
         self.rect=self.image.get_rect(midbottom=starting_pos.midbottom)
         self.speed=[10,0]
         self.reverse_speed=[-10,0]
@@ -79,7 +79,7 @@ class aliens(pygame.sprite.Sprite):
    
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("alien1.png")
+        self.image=pygame.image.load("data/alien1.png")
         self.rect=self.image.get_rect()
         self.pos=random.choice([[0,0],[800,0]])
         if self.pos==[0,0]:
@@ -103,7 +103,7 @@ class alien_bomb(pygame.sprite.Sprite):
     
     def __init__(self,ship):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("alien_bomb.png")
+        self.image=pygame.image.load("data/alien_bomb.png")
         self.rect=self.image.get_rect(center=ship.rect.midbottom)
         self.speed=[0,6]
         return
@@ -117,7 +117,7 @@ class player_shot(pygame.sprite.Sprite):
     
     def __init__(self,pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load("shot.png")
+        self.image=pygame.image.load("data/shot.png")
         self.rect=self.image.get_rect(midbottom=pos)
         self.speed=[0,-16]
     def update(self,screen_rect):
@@ -140,7 +140,7 @@ def main_function():
        
     """ MUSIC """
     pygame.mixer.init()
-    soundtrack = "soundtrack_1.mp3"
+    soundtrack = "data/soundtrack_1.mp3"
     pygame.mixer.music.load(soundtrack)
     pygame.mixer.music.play(-1)
     """ CALL GAME """
@@ -164,11 +164,11 @@ def game_function():
     bomb_firing_rate=[18,21,24,27]
     bomb_prob=7 #60%
     lifepoints=7
-    background_im="space_background.jpg"
+    background_im="data/space_background.jpg"
 
     """ MUSIC """
     pygame.mixer.init()
-    soundtrack = "soundtrack_1.mp3"
+    soundtrack = "data/soundtrack_1.mp3"
     pygame.mixer.music.load(soundtrack)
     pygame.mixer.music.play(-1)
     """ CALL GAME """
@@ -183,7 +183,7 @@ def game_function():
 
     
     """ DECORATING DISPLAY BAR """
-    icon=pygame.image.load("alien1.png")
+    icon=pygame.image.load("data/alien1.png")
     icon=pygame.transform.scale(icon,(32,32))
     pygame.display.set_icon(icon)
     pygame.display.set_caption("Kill Aliens!")
@@ -315,7 +315,7 @@ def game_function():
 
 
 def death(scores):
-    background_im="death_screen.jpg"
+    background_im="data/death_screen.jpg"
     background=pygame.image.load(background_im)
     screen_dimension=background.get_rect()
     width=screen_dimension[2]
