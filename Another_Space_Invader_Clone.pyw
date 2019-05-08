@@ -134,10 +134,6 @@ class player_shot(pygame.sprite.Sprite):
 
 def main_function():
 
-    """ DEFINE PATH  """
-    path=sys.path[0]
-    os.chdir(path)
-       
     """ MUSIC """
     pygame.mixer.init()
     soundtrack = "data/soundtrack_1.mp3"
