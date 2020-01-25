@@ -4,6 +4,7 @@
 """ ############### IMPORT MODULES ############# """
 
 import pygame,os,sys,random
+os.chdir( os.path.dirname(os.path.abspath(__file__)))
 pygame.font.init()
 
 
