@@ -1,4 +1,4 @@
-# Kill Aliens!
+# Kill Aliens
 
 A simple clone of Space Invaders, built with Pygame.
 
