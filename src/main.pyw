@@ -1,31 +1,10 @@
-import pygame, os, sys, platform, random
-from explosions import *
-from shots import *
-from ships import *
+import pygame, os, sys, random
+from index import *
+from config import current_keys
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 pygame.font.init()
 
-
-keyboard_keys = {
-    'Windows': {
-        'up': 273,
-        'down': 274,
-        'right': 275,
-        'left': 276,
-        'space': 32,
-    },
-    'Darwin': {
-        'up': 1073741905,
-        'down': 1073741906,
-        'right': 1073741903,
-        'left': 1073741904,
-        'space': 32,
-    },
-}
-
-current_system = platform.system()
-current_keys = keyboard_keys[current_system]
 
 def main():
 
@@ -97,7 +76,6 @@ def main():
                 pygame.mixer.music.fadeout(2000)
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                print(event.key)
                 if event.key == current_keys['right']:
                     player_mov = player.speed
                 elif event.key == current_keys['left']:
