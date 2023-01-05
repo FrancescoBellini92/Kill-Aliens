@@ -10,7 +10,7 @@ class Explosion(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("assets/images/misc/explosion.png")
         self.rect = self.image.get_rect(center = obj.rect.center)
-        self.life = 3 # how many frames the object will be rendered
+        self.life = 6 # how many frames the object will be rendered
 
     def update(self):
         self.life -= 1

@@ -9,7 +9,7 @@ class PlayerShot(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("assets/images/player/player_shot.png")
         self.rect = self.image.get_rect(midbottom = pos)
-        self.speed = [0,-16]
+        self.speed = [0,-8]
 
     def update(self,screen_rect):
         self.rect.y += self.speed[1]

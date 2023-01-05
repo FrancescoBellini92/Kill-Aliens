@@ -3,16 +3,16 @@ import pygame, os, random
 os.chdir( os.path.dirname(os.path.abspath(__file__)))
 
 
-class Alien(pygame.sprite.Sprite):
-    def __init__(self):
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, speed_x, speed_y):
         super().__init__()
-        self.image=pygame.image.load("assets/images/alien/alien.png")
+        self.image=pygame.image.load("assets/images/enemy/enemy.png")
         self.rect = self.image.get_rect()
         self.pos = random.choice([ [0, 0], [800, 0] ])
         if self.pos == [0, 0]:
-            self.speed = [10, 30]
+            self.speed = [speed_x, speed_y]
         else:
-            self.speed = [-10, 30]
+            self.speed = [-5, 15]
             self.rect = self.image.get_rect(right = 800)
 
 

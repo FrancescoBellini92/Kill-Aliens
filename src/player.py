@@ -14,8 +14,8 @@ class Player(pygame.sprite.Sprite):
             "assets/images/player/expl4.png"
         ]
         self.rect = self.image.get_rect(midbottom = starting_pos.midbottom)
-        self.speed = [10, 0]
-        self.reverse_speed = [-10, 0]
+        self.speed = [5, 0]
+        self.reverse_speed = [-5, 0]
         self.stop = [0, 0]
         self.life = 0
         self.frame_duration = len(self.explosions) - 1 # 4 frames, as the pictures for explosion

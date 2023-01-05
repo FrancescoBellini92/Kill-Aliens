@@ -1,4 +1,4 @@
-import pygame, os, sys, random
+import pygame, os, sys, random, math
 from index import *
 from config import current_keys
 
@@ -10,20 +10,23 @@ def main():
 
     """ INIT """
     clock = pygame.time.Clock()
-    framerate = 30
+    framerate = 60
     enemy_respawn_clock = 0
     bomb_firing_clock = 0
     scores = 0
+    bonus_life_score_counter = 0
     player_mov = [0, 0]
 
 
     """ PARAMETERS """
     n_enemies = 12
-    respawn_delay = 15
+    respawn_delay = 30
     respawn_prob = 7 # 60%
     bomb_firing_rate = [18, 21, 24, 27]
-    bomb_prob = 7 #60%
-    lifepoints = 7
+    bomb_prob = 5 #50%
+    lifepoints = 20
+    score_threshold_for_bonus_life = 10
+    enable_fast_enemies = False
     background_im = "assets/images/misc/space_background.jpg"
 
 
@@ -44,7 +47,7 @@ def main():
 
 
     """ DECORATING DISPLAY BAR """
-    icon = pygame.image.load("assets/images/alien/alien.png")
+    icon = pygame.image.load("assets/images/enemy/enemy.png")
     icon = pygame.transform.scale(icon,(32, 32))
     pygame.display.set_icon(icon)
     pygame.display.set_caption("Kill Aliens!")
@@ -52,7 +55,7 @@ def main():
 
 
     """ OBJECTS """
-    enemy = Alien()
+    enemy = Enemy(5, 15)
     player = Player(screen_rect)
     enemy_group = pygame.sprite.Group(enemy)
     bomb_group = pygame.sprite.Group(EnemyShot(enemy))
@@ -92,7 +95,7 @@ def main():
             enemy_respawn_clock = 0
         elif enemy_respawn_clock >= respawn_delay:
             if random.randint(0, 10) in range(respawn_prob): # probability of respawning
-                enemy_group.add(Alien())
+                enemy_group.add(Enemy(10, 30) if enable_fast_enemies else Enemy(5, 15))
             enemy_respawn_clock = 0
         if bomb_firing_clock >= random.choice(bomb_firing_rate): # by using a list of numbers, bomb firing rate is jittered
             for n in enemy_group:
@@ -117,6 +120,7 @@ def main():
             expl = EnemyExplosion(collision_shot_enemy[shot][0])
             explosion_enemy_group.add(expl)
             scores += 1
+            bonus_life_score_counter += 1
 
 
         # MOVEMENT HANDLING
@@ -154,18 +158,22 @@ def main():
 
 
         # DIFFICULTY HANDLING
-        if scores > 10:
+        if scores > 20:
             n_enemies = 18
-            respawn_delay = 12
+            respawn_delay = 24
             bomb_firing_rate = [15, 18, 21, 24]
-        elif scores > 20:
+            enable_fast_enemies = True
+        elif scores > 50:
             n_enemies = 24
-            respawn_delay = 10
+            respawn_delay = 20
             bomb_firing_rate = [12, 15, 18, 24]
-        elif scores > 30:
-            n_enemies = 36
-            respawn_delay = 8
-            bomb_firing_rate = [9, 12, 15, 18]
+
+
+        ## BONUS LIFEPOINTS
+        if bonus_life_score_counter >= score_threshold_for_bonus_life:
+            lifepoints_to_gain = round(bonus_life_score_counter / score_threshold_for_bonus_life)
+            lifepoints += lifepoints_to_gain
+            bonus_life_score_counter = 0
 
 
         # DEATH HANDLING

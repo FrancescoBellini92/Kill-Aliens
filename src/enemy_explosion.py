@@ -9,11 +9,16 @@ class EnemyExplosion(pygame.sprite.Sprite):
     def __init__(self, obj):
         super().__init__()
         self.images = [
-            "assets/images/alien/alien_explod1.png",
-            "assets/images/alien/alien_explod1.png",
-            "assets/images/alien/alien_explod2.png",
-            "assets/images/alien/alien_explod2.png",
-            "assets/images/alien/alien_gone.png"
+            "assets/images/enemy/enemy_explod1.png",
+            "assets/images/enemy/enemy_explod1.png",
+            "assets/images/enemy/enemy_explod1.png",
+            "assets/images/enemy/enemy_explod1.png",
+            "assets/images/enemy/enemy_explod2.png",
+            "assets/images/enemy/enemy_explod2.png",
+            "assets/images/enemy/enemy_explod2.png",
+            "assets/images/enemy/enemy_explod2.png",
+            "assets/images/enemy/enemy_gone.png"
+            "assets/images/enemy/enemy_gone.png"
         ]
         self.image = pygame.image.load(self.images[0])
         self.rect = self.image.get_rect(center = obj.rect.center)
