@@ -1,4 +1,4 @@
-import pygame, os, sys, random
+import pygame, os, sys, platform, random
 from explosions import *
 from shots import *
 from ships import *
@@ -6,12 +6,26 @@ from ships import *
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 pygame.font.init()
 
-UP_KEY = 273
-DOWN_KEY = 274
-RIGHT_KEY = 275
-LEFT_KEY = 276
-SPACE_KEY = 32
 
+keyboard_keys = {
+    'Windows': {
+        'up': 273,
+        'down': 274,
+        'right': 275,
+        'left': 276,
+        'space': 32,
+    },
+    'Darwin': {
+        'up': 1073741905,
+        'down': 1073741906,
+        'right': 1073741903,
+        'left': 1073741904,
+        'space': 32,
+    },
+}
+
+current_system = platform.system()
+current_keys = keyboard_keys[current_system]
 
 def main():
 
@@ -26,7 +40,7 @@ def main():
 
     """ PARAMETERS """
     n_enemies = 12
-    respawn_frequency = 15
+    respawn_delay = 15
     respawn_prob = 7 # 60%
     bomb_firing_rate = [18, 21, 24, 27]
     bomb_prob = 7 #60%
@@ -83,21 +97,22 @@ def main():
                 pygame.mixer.music.fadeout(2000)
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == RIGHT_KEY:
+                print(event.key)
+                if event.key == current_keys['right']:
                     player_mov = player.speed
-                elif event.key == LEFT_KEY:
+                elif event.key == current_keys['left']:
                     player_mov = player.reverse_speed
-                if event.key == SPACE_KEY:
+                if event.key == current_keys['space']:
                     shot = PlayerShot(player.rect.midtop)
                     shot_group.add(shot)
-            elif event.type == pygame.KEYUP and event.key in [RIGHT_KEY, LEFT_KEY]:
+            elif event.type == pygame.KEYUP and event.key in [current_keys['left'], current_keys['right']]:
                 player_mov = player.stop
 
 
         # RESPAWN HANDLING
         if len(enemy_group) > n_enemies:
             enemy_respawn_clock = 0
-        elif enemy_respawn_clock >= respawn_frequency:
+        elif enemy_respawn_clock >= respawn_delay:
             if random.randint(0, 10) in range(respawn_prob): # probability of respawning
                 enemy_group.add(Alien())
             enemy_respawn_clock = 0
@@ -163,26 +178,24 @@ def main():
         # DIFFICULTY HANDLING
         if scores > 10:
             n_enemies = 18
-            respawn_frequency = 12
+            respawn_delay = 12
             bomb_firing_rate = [15, 18, 21, 24]
         elif scores > 20:
             n_enemies = 24
-            respawn_frequency = 10
-            bomb_firing_rate = 10
+            respawn_delay = 10
             bomb_firing_rate = [12, 15, 18, 24]
         elif scores > 30:
             n_enemies = 36
-            respawn_frequency = 8
-            bomb_firing_rate = 8
+            respawn_delay = 8
             bomb_firing_rate = [9, 12, 15, 18]
 
 
         # DEATH HANDLING
         if lifepoints < 1:
-            player.death_sequence(scores, death)
+            player.death_sequence(scores, death_handling)
 
 
-def death(scores):
+def death_handling(scores):
     background_im = "assets/images/misc/death_screen.jpg"
     background = pygame.image.load(background_im)
     screen_dimension = background.get_rect()
@@ -210,7 +223,7 @@ def death(scores):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key in [82, 114]:
-                    return game_function()
+                    main()
                 elif event.key in [81, 113]:
                     pygame.display.quit()
                     sys.exit()
