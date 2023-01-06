@@ -1,6 +1,6 @@
-import pygame, os, sys, random, math
+import pygame, os, sys, random
 from index import *
-from config import current_keys
+from system_config import current_keys
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 pygame.font.init()
@@ -16,9 +16,11 @@ def main():
     scores = 0
     bonus_life_score_counter = 0
     player_mov = [0, 0]
+    global_clock = 0
 
 
-    """ PARAMETERS """
+    """ GAME PARAMETERS """
+    title = "Kill Aliens!"
     n_enemies = 12
     respawn_delay = 30
     respawn_prob = 7 # 60%
@@ -26,37 +28,48 @@ def main():
     bomb_prob = 5 #50%
     lifepoints = 20
     score_threshold_for_bonus_life = 10
+    enable_enemies = False
     enable_fast_enemies = False
+
+
+    """ ASSETS """
     background_im = "assets/images/misc/space_background.jpg"
+    icon_im = "assets/images/enemy/enemy.png"
+    soundtrack = "assets/audio/soundtrack.mp3"
 
 
     """ MUSIC """
     pygame.mixer.init()
-    soundtrack  =  "assets/audio/soundtrack.mp3"
     pygame.mixer.music.load(soundtrack)
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(-1, 0.0, 10000)
+
 
 
     """ DISPLAY """
     background = pygame.image.load(background_im)
-    screen_dimension = background.get_rect()
-    width = screen_dimension[2]
-    height = screen_dimension[3]
-    screen = pygame.display.set_mode([width,height])
-    screen_rect = screen.get_rect()
+    background_dimensions = background.get_rect()
+    playable_height = background_dimensions[3]
+    info_height = 80
+    total_height = playable_height + info_height
+    width = background_dimensions[2]
+    playable_screen_rect = pygame.Rect(background_dimensions)
+    complete_screen = pygame.display.set_mode([width, total_height])
+
+    info_screen_surface = pygame.Surface((width, total_height))
+    info_screen_surface.fill('black')
 
 
     """ DECORATING DISPLAY BAR """
-    icon = pygame.image.load("assets/images/enemy/enemy.png")
+    icon = pygame.image.load(icon_im)
     icon = pygame.transform.scale(icon,(32, 32))
     pygame.display.set_icon(icon)
-    pygame.display.set_caption("Kill Aliens!")
+    pygame.display.set_caption(title)
     pygame.mouse.set_visible(1)
 
 
     """ OBJECTS """
     enemy = Enemy(5, 15)
-    player = Player(screen_rect)
+    player = Player(playable_screen_rect)
     enemy_group = pygame.sprite.Group(enemy)
     bomb_group = pygame.sprite.Group(EnemyShot(enemy))
     player_group = pygame.sprite.Group(player)
@@ -68,8 +81,9 @@ def main():
 
     """ MAIN LOOP """
     while True:
-        enemy_respawn_clock += 1
-        bomb_firing_clock += 1
+        if enable_enemies:
+            enemy_respawn_clock += 1
+            bomb_firing_clock += 1
 
 
         # EVENT HANDLING
@@ -124,38 +138,62 @@ def main():
 
 
         # MOVEMENT HANDLING
-        enemy_group.update(screen_rect)
-        bomb_group.update(screen_rect)
-        player_group.update(player_mov, screen_rect)
-        shot_group.update(screen_rect)
+        if enable_enemies:
+            enemy_group.update(playable_screen_rect)
+            bomb_group.update(playable_screen_rect)
+            explosion_enemy_group.update()
+        player_group.update(player_mov, playable_screen_rect)
+        shot_group.update(playable_screen_rect)
         explosion_group.update()
-        explosion_enemy_group.update()
 
 
         # MAIN ANIMATION
         clock.tick(framerate)
-        screen.blit(background, screen_dimension)
-        enemy_group.draw(screen)
-        bomb_group.draw(screen)
-        player_group.draw(screen)
-        shot_group.draw(screen)
-        explosion_group.draw(screen)
-        explosion_enemy_group.draw(screen)
+        complete_screen.blit(background, background_dimensions)
+        complete_screen.blit(info_screen_surface, (0, total_height - info_height, width, total_height))
 
-        scores_string = str(scores)
-        score_text = "Enemies destroyed:" + scores_string
-        score_font = pygame.font.Font(None, 30)
-        score_display = score_font.render(score_text, True, (255, 0, 0))
-        screen.blit(score_display, [width - 218, height - 25])
+        player_group.draw(complete_screen)
+        shot_group.draw(complete_screen)
+        explosion_group.draw(complete_screen)
+        if enable_enemies:
+            enemy_group.draw(complete_screen)
+            bomb_group.draw(complete_screen)
+            explosion_enemy_group.draw(complete_screen)
+
+        base_font = pygame.font.Font(None, 30)
+
 
         life_string = str(lifepoints)
         life_text = "Lifepoints: " + life_string
-        life_font = pygame.font.Font(None, 30)
+        life_font = base_font
         life_display = life_font.render(life_text, True, (255, 0, 0))
-        screen.blit(life_display,[width - 139, height - 75])
+        complete_screen.blit(life_display,[width - 155, total_height - 60])
+
+
+        scores_string = str(scores)
+        score_text = "Enemies destroyed: " + scores_string
+        score_font = base_font
+        score_display = score_font.render(score_text, True, (255, 0, 0))
+        complete_screen.blit(score_display, [width - 240, total_height -30])
+
+
+        shoot_text = 'Press spacebar to shoot'
+        shoot_font = base_font
+        shoot_display = shoot_font.render(shoot_text, True, (255, 0, 0))
+        complete_screen.blit(shoot_display, [15, total_height - 60])
+
+
+        move_text = 'Use left and right arrow keys to move'
+        move_font = base_font
+        move_display = move_font.render(move_text, True, (255, 0, 0))
+        complete_screen.blit(move_display, [15, total_height -30])
+
+
+        global_clock += clock.get_time()
+        if (global_clock > 5000):
+            enable_enemies = True
 
         pygame.display.flip()
-
 
         # DIFFICULTY HANDLING
         if scores > 20:
